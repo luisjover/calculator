@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>JS Calculator</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="calculator.js" theme="blue" defer></script>
+  </head>
+
+  <body>
+    <div class="log-menu">
+      DISPLAY LOG
+      <ul class="log-list"></ul>
+      <button class="btn-log" id="clear-log">CLEAR LOG</button>
+    </div>
+    <div class="calculator-grid">
+      <div class="upper-bar">
+        <div class="corner">xXx</div>
+        <div class="toggle">
+          <label class="switch">
+            <input type="checkbox" id="toDark" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="display"></div>
+      <div class="btn-div clear" id="clear">
+        <div class="btn btn-color">C</div>
+      </div>
+      <div class="btn-div" id="negative">
+        <div class="btn btn-color">
+          <div class="btn-padd btn-big">±</div>
+        </div>
+      </div>
+      <div class="btn-div btn-op" name="%">
+        <div class="btn btn-color">%</div>
+      </div>
+      <div class="btn-div btn-op">
+        <div class="btn btn-color">
+          <div class="btn-big">/</div>
+        </div>
+      </div>
+      <div class="btn-div btn-num">
+        <div class="btn">7</div>
+      </div>
+      <div class="btn-div btn-num">
+        <div class="btn">8</div>
+      </div>
+      <div class="btn-div btn-num">
+        <div class="btn">9</div>
+      </div>
+      <div class="btn-div btn-op">
+        <div class="btn btn-color">
+          <div class="btn-padd1 btn-big">*</div>
+        </div>
+      </div>
+
+      <div class="btn-div btn-num">
+        <div class="btn">4</div>
+      </div>
+
+      <div class="btn-div btn-num">
+        <div class="btn">5</div>
+      </div>
+
+      <div class="btn-div btn-num">
+        <div class="btn">6</div>
+      </div>
+
+      <div class="btn-div btn-op">
+        <div class="btn btn-color">
+          <div class="btn-padd btn-big">-</div>
+        </div>
+      </div>
+
+      <div class="btn-div btn-num">
+        <div class="btn">1</div>
+      </div>
+
+      <div class="btn-div btn-num">
+        <div class="btn">2</div>
+      </div>
+
+      <div class="btn-div btn-num">
+        <div class="btn">3</div>
+      </div>
+
+      <div class="btn-div btn-op">
+        <div class="btn btn-color">
+          <div class="btn-padd btn-big">+</div>
+        </div>
+      </div>
+
+      <div class="btn-div btn-num">
+        <div class="btn">0</div>
+      </div>
+
+      <div class="btn-div" onclick="printDecimal('.', '0.')">
+        <div class="btn">.</div>
+      </div>
+
+      <div class="btn-div" id="delete">
+        <div class="btn">del</div>
+      </div>
+
+      <div class="btn-div" id="equal">
+        <div class="btn btn-s">
+          <div class="btn-padd btn-big">=</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-sidebar">
+      <span class="music-letters">PLAY MUSIC</span>
+      <span id="play-stop"
+        ><img id="image" src="assets/images/speakers.png"
+      /></span>
+      <button class="btn-science">SCI CALC</button>
+      <div class="science">
+        <div class="sci-btn">√(x)</div>
+        <div class="sci-btn">log(x)</div>
+        <div class="sci-btn">sin(x)</div>
+        <div class="sci-btn">cos(x)</div>
+        <div class="sci-btn">tan(x)</div>
+        <div class="sci-btn">º/rad</div>
+      </div>
+      <div class="clock"></div>
+    </div>
+  </body>
+</html>

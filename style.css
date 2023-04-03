@@ -1,0 +1,371 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --main-bg-color: #a2d9ce;
+  --cal-color: ghostwhite;
+  --display-color: #a9f3da;
+  --btn-color: #80ed99;
+  --spbtn-color: #57cc99;
+  --dark-bg-color: #db86ee;
+  --cal-dark-color: darkslategray;
+  --display-dark-color: #f4e0f9;
+  --btn-dark-color: #d441f4;
+  --spbtn-dark-color: #811499;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  font-family: "Orbitron", sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+body {
+  background-color: var(--main-bg-color);
+  display: grid;
+  grid-template-columns: 20vw 1fr 20vw;
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto 17% auto;
+  min-width: 400px;
+  max-width: 940px;
+  min-height: 72vh;
+  background-color: var(--cal-color);
+  margin: 100px auto auto;
+  padding: 20px 10px;
+  border-radius: 30px;
+}
+
+.upper-bar {
+  grid-column: 1/5;
+  background-color: var(--cal-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 30px 30px 0 0;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--cal-color);
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: var(--main-bg-color);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--main-bg-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider {
+  border-radius: 34px;
+}
+
+.slider:before {
+  border-radius: 50%;
+}
+
+.display {
+  grid-column: 1/5;
+  background-color: var(--display-color);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  font-size: 50px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.btn-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  /*border: 1px solid;*/
+  height: 64px;
+  width: 64px;
+  display: flex;
+  cursor: pointer;
+}
+
+.btn-color {
+  background-color: var(--btn-color);
+}
+
+.btn-big {
+  font-size: 40px;
+}
+
+.btn-s {
+  background-color: var(--spbtn-color);
+}
+
+.btn-padd {
+  position: relative;
+  bottom: 3px;
+}
+
+.btn-padd1 {
+  position: relative;
+  top: 3px;
+}
+
+.equal {
+  grid-column: 4/5;
+}
+
+/*LOG LIST*/
+
+.log-menu {
+  margin: 20px 0 0 40px;
+}
+
+.log-list {
+  list-style: none;
+  margin-top: 50px;
+  margin-left: 30px;
+  margin-bottom: 30px;
+}
+
+.btn-log,
+.btn-science {
+  margin-left: 30px;
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-family: "Orbitron", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  border: none;
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+  background-color: var(--spbtn-dark-color);
+  z-index: 1;
+}
+
+.btn-log:hover:after,
+.btn-science:hover:after {
+  width: 100%;
+  left: 0;
+}
+
+.btn-log:after,
+.btn-science:after {
+  border-radius: 5px;
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 100%;
+  top: 0;
+  z-index: -1;
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  background-color: var(--btn-dark-color);
+  right: 0;
+}
+
+.btn-log:active,
+.btn-science:active {
+  top: 2px;
+}
+
+/*----------------------------  RIGHT SIDE-BAR  ---------------------------------*/
+.right-sidebar {
+  display: grid;
+  height: 100vh;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.music-letters {
+  grid-row: 1/2;
+  display: flex;
+  justify-self: center;
+  padding-top: 8px;
+}
+
+#play-stop {
+  grid-row: 2/6;
+  display: flex;
+  justify-self: center;
+  background: transparent;
+  cursor: pointer;
+  padding-bottom: 60px;
+}
+
+#image {
+  height: 220px;
+}
+
+/*---------------------- SCIENCE ----------------------*/
+
+.btn-science {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  align-self: center;
+  margin-left: 0px;
+}
+
+.science {
+  display: none;
+}
+
+.science-show {
+  grid-row: 7/9;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  align-self: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 50px;
+}
+
+.sci-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  align-self: center;
+  width: 110px;
+  padding: 5px;
+  color: var(--spbtn-dark-color);
+  border: 3px solid var(--btn-dark-color);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/*--------------------- CLOCK ----------------------*/
+
+.clock {
+  grid-row: 11/12;
+  display: flex;
+  width: 190px;
+  justify-self: center;
+  color: var(--spbtn-dark-color);
+  cursor: default;
+}
+
+/* -------- SOUND ------ */
+
+iframe {
+  display: none;
+}
+
+/*----------------------------  DARKMODE  ------------------------------*/
+
+.dark-bg {
+  background-color: var(--dark-bg-color);
+}
+
+.dark-corner {
+  color: white;
+}
+
+.dark-cal {
+  background-color: var(--cal-dark-color);
+}
+
+.dark-upper {
+  background-color: var(--cal-dark-color);
+}
+
+.dark-display {
+  background-color: var(--display-dark-color);
+}
+
+.dark-btn {
+  background-color: var(--btn-dark-color);
+  color: white;
+}
+
+.dark-btn1 {
+  color: white;
+}
+
+.dark-btn-s {
+  background-color: var(--spbtn-dark-color);
+  color: white;
+}
+
+.dark-btn-log,
+.dark-btn-science {
+  background-color: var(--spbtn-color);
+  color: black;
+}
+
+.dark-btn-log:after,
+.dark-btn-science:after {
+  background-color: var(--btn-color);
+}
+
+input:checked + .dark-slider {
+  background-color: var(--spbtn-dark-color);
+}
+
+input:focus + .dark-slider {
+  background-color: var(--spbtn-dark-color);
+}
