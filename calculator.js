@@ -1,10 +1,11 @@
-/*Each numeric button add a number on display;
-Decimal point (.) is not allowed as first character on display;
-we will fix a max num of characters on nine (9) + three (3) operators;
-"c" button clear all the character on display;
-** extra feature, keyboard keys are also working;*/
+/** Each numeric button add a number on display;
+ * Decimal point (.) is not allowed as first character on display;
+ * we will fix a max num of characters on nine (9) + three (3) operators;
+ * "c" button clear all the character on display;
+ * extra feature, keyboard keys are also working;
+ */
 
-/* global variables needed */
+// global variables needed
 const numKeys = document.querySelectorAll(".btn-num");
 const operatorKeys = document.querySelectorAll(".btn-op");
 const clearLog = document.getElementById("clear-log");
@@ -17,15 +18,14 @@ const scienceDiv = document.querySelector(".science");
 const musicBtn = document.getElementById("play-stop");
 const darkButton = document.getElementById("toDark");
 let display = document.querySelector(".display");
-let displayLog = []; /*to unshift display to set display log*/
-let arrOp = []; /*to push operators and use it later*/
+let displayLog = [];                  // to unshift display to set display log
+let arrOp = [];                       // to push operators and use it later
 
-/* event listeners needed*/
+// event listeners needed
 window.addEventListener("load", setClock());
+window.addEventListener("keydown", keyDatas);
 numKeys.forEach((numKey) => numKey.addEventListener("click", printNumber));
-operatorKeys.forEach((operatorKey) =>
-  operatorKey.addEventListener("click", printOperator)
-);
+operatorKeys.forEach((operatorKey) => operatorKey.addEventListener("click", printOperator));
 clearLog.addEventListener("click", clearLogList);
 negative.addEventListener("click", makeNegative);
 clear.addEventListener("click", clearAll);
@@ -36,13 +36,32 @@ scienceDiv.addEventListener("click", sciCal);
 musicBtn.addEventListener("click", playStopMusic);
 darkButton.addEventListener("click", toDarkMode);
 
-/* Initial state of log-state*/
+// Initial state of log-state
 display.setAttribute("log-state", "solved");
 
-/*In charge of printing numbers and prevent them to exceed the fixed maximum;
-Also taking care of numbers being printed after a resolved operation*/
+/** In charge of printing numbers and prevent them to exceed the fixed maximum;
+ * Also taking care of numbers being printed after a resolved operation
+ */
 function printNumber(event) {
-  if (event.target.innerText != 0 || display.innerHTML.toString().length != 0) {
+  if (display.hasAttribute("display-state")) {
+    display.textContent = "";
+    display.removeAttribute("display-state");
+  }
+  if (display.hasAttribute("deletable")) {
+    display.textContent = "";
+    display.removeAttribute("deletable");
+  }
+  if ((event.target.innerText != 0) || display.innerHTML.toString().length != 0) {
+    if (event.target.innerText != 0 || !checkEndOp1()) {
+      if (display.innerHTML.toString().length < 20) display.textContent += event.target.innerText;
+    }
+  }
+  else display.textContent += "0.";
+}
+
+// In charge of printing numbers coming from keyboard
+function printNumberKeyboard(event) {
+  if ((event.key != 0) || display.innerHTML.toString().length != 0) {
     if (display.hasAttribute("display-state")) {
       display.textContent = "";
       display.removeAttribute("display-state");
@@ -51,14 +70,15 @@ function printNumber(event) {
       display.textContent = "";
       display.removeAttribute("deletable");
     }
-    if (display.innerHTML.toString().length < 22)
-      display.textContent += event.target.innerText;
+    if (display.innerHTML.toString().length < 20)
+      display.textContent += event.key;
   }
 }
 
-/*In charge of printing operators and prevent rules break as repeat operator or
-print operator if any number before - calling external function (checkEndOp())
-also reset other functions as making possible print a new decimal point again*/
+/** In charge of printing operators and prevent rules break as repeat operator or
+ * print operator if any number before - calling external function (checkEndOp())
+ * also reset other functions as making possible print a new decimal point again
+ */
 function printOperator(event) {
   if (!display.hasAttribute("deletable")) {
     if (display.hasAttribute("display-state"))
@@ -68,8 +88,8 @@ function printOperator(event) {
 
     if (
       display.innerHTML.toString().length > 0 &&
-      display.innerHTML.toString().length < 22 &&
-      checkEndOp() !== true
+      display.innerHTML.toString().length < 20 &&
+      !checkEndOp()
     ) {
       arrOp.push(event.target.innerText);
       display.textContent += event.target.innerText;
@@ -77,42 +97,64 @@ function printOperator(event) {
   }
 }
 
-/*In charge of prevent more than one decimal point use or use it before any number
-and make sure another decimal point won´t be printed before a new operator is added*/
+// In charge of printting operators coming from keyboard
+function printOperatorKeyboard(event) {
+  if (!display.hasAttribute("deletable")) {
+    if (display.hasAttribute("display-state"))
+      display.removeAttribute("display-state");
+    if (display.hasAttribute("log-state")) display.removeAttribute("log-state");
+    if (display.hasAttribute("decimal")) display.removeAttribute("decimal");
+
+    if (
+      display.innerHTML.toString().length > 0 &&
+      display.innerHTML.toString().length < 20 &&
+      !checkEndOp()
+    ) {
+      arrOp.push(event.key);
+      display.textContent += event.key;
+    }
+  }
+}
+
+/** In charge of prevent more than one decimal point use or use it before any number
+ * and make sure another decimal point won´t be printed before a new operator is added
+ */
 function printDecimal(decimal, zeroDec) {
   if (!display.hasAttribute("deletable")) {
-    if (
-      !(
-        display.hasAttribute("display-state") && display.innerHTML.includes(".")
-      )
-    ) {
+    if (!(display.hasAttribute("display-state") && display.innerHTML.includes("."))) {
       if (display.innerHTML.toString().length === 0) {
-        if (display.hasAttribute("display-state"))
-          display.removeAttribute("display-state");
+        if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
         display.textContent += zeroDec;
         display.setAttribute("decimal", "passed");
       } else if (!checkEndOp() && display.innerHTML.indexOf(".") == -1) {
+        if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
         display.textContent += decimal;
         display.setAttribute("decimal", "passed");
-      } else {
-        if (!checkEndOp() && !display.hasAttribute("decimal")) {
-          display.textContent += decimal;
-          display.setAttribute("decimal", "passed");
-        }
+      } else if (!checkEndOp() && !display.hasAttribute("decimal")) {
+        if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
+        display.textContent += decimal;
+        display.setAttribute("decimal", "passed");
+      } else if (checkEndOp1()) {
+        if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
+        display.textContent += zeroDec;
+        display.setAttribute("decimal", "passed");
       }
     }
   }
 }
 
-/*Change the sign of the number on display*/
+
+//Change the sign of the number on display
 function makeNegative() {
-  if (Math.sign(display.textContent))
-    display.textContent = -display.textContent;
+  if (!checkEndOp()) {
+    if (Math.sign(display.textContent)) display.textContent = -display.textContent;
+  }
 }
 
-/*In charge of print the result, prevent excess of decimals and be sure display will be refreshed if starting new operation, otherwise keep the value and continue operating;
-Also push operations and results in Log Array to create the operations log
-Operation is done by an external function (calcNums()) avoiding Eval() use*/
+/** In charge of print the result, prevent excess of decimals and be sure display will be refreshed if starting new operation, otherwise keep the value and continue operating;
+ * Also push operations and results in Log Array to create the operations log
+ * Operation is done by an external function (calcNums()) avoiding Eval() use
+ */
 function equalTo() {
   if (!display.hasAttribute("deletable")) {
     if (!checkEndOp()) {
@@ -121,7 +163,7 @@ function equalTo() {
         let strNums = display.innerHTML.toString();
         let result = calcNums(strNums);
         if (result % 1 !== 0) {
-          display.textContent = result.toPrecision(3);
+          display.textContent = roundNumber(result);
           display.setAttribute("display-state", "toClear");
           display.setAttribute("log-state", "solved");
           displayLog.unshift("Result " + display.textContent);
@@ -139,7 +181,7 @@ function equalTo() {
   }
 }
 
-/*Erase all the display content when you press C button and keep all the rules working for that case*/
+// Erase all the display content when you press C button and keep all the rules working for that case
 function clearAll() {
   display.textContent = "";
   arrOp = [];
@@ -147,17 +189,21 @@ function clearAll() {
   display.setAttribute("log-state", "solved");
 }
 
-/* Erase last char and ensure all rules keep working as you keep deleting characters */
+// Delete last character and ensure all rules keep working as you keep deleting characters
 function deleteSimple() {
   if (!display.hasAttribute("deletable")) {
-    if (checkEndOp()) {
+    if (display.innerHTML.endsWith("0.")) {
+      display.textContent = display.textContent.slice(0, -2);
+      if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
+    } else if (checkEndOp1()) {
       display.textContent = display.textContent.slice(0, -1);
+      if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
       if (!checkOp()) {
         display.setAttribute("log-state", "solved");
-        if (display.hasAttribute("display-state"))
-          display.removeAttribute("display-state");
+        if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
         arrOp.pop();
       } else {
+        if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
         arrOp.pop();
       }
     } else {
@@ -166,15 +212,26 @@ function deleteSimple() {
         display.setAttribute("log-state", "solved");
       }
       display.textContent = display.textContent.slice(0, -1);
+      if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
     }
   }
 }
 
-/*---------------------------------------------------------------------------------*/
+//---------------------------------------------------------------------------------
 
-/*---------------------- External Functions ---------------------------------------*/
+//---------------------- EXTERNAL FUNCTIONS ---------------------------------------
 
-/*In charge of checking if last character is operator or decimal point*/
+// In charge of checking what kind of key is being pressed and call the right function
+function keyDatas(event) {
+  if (isFinite(event.key)) printNumberKeyboard(event);
+  if (["+", "-", "*", "/", "%"].indexOf(event.key) != -1) printOperatorKeyboard(event);
+  if (event.key == ".") printDecimal(".", "0.");
+  if (event.key == "Enter") equalTo();
+  if (event.key == "c") clearAll();
+  if (event.keyCode == 8) deleteSimple();
+}
+
+// In charge of checking if last character is operator or decimal point*/
 function checkEndOp() {
   if (display.innerHTML.endsWith("+")) return true;
   else if (display.innerHTML.endsWith("-")) return true;
@@ -185,7 +242,18 @@ function checkEndOp() {
   else return false;
 }
 
-/*In charge of checking if display contains any operator or decimal point*/
+// Its a checkEndOp version not looking into decimal point for printDecimal function
+function checkEndOp1() {
+  if (display.innerHTML.endsWith("+")) return true;
+  else if (display.innerHTML.endsWith("-")) return true;
+  else if (display.innerHTML.endsWith("*")) return true;
+  else if (display.innerHTML.endsWith("/")) return true;
+  else if (display.innerHTML.endsWith("%")) return true;
+  else if (display.innerHTML.endsWith(".")) return false;
+  else return false;
+}
+
+// In charge of checking if display contains any operator or decimal point*
 function checkOp() {
   if (display.innerHTML.includes("+")) return true;
   else if (display.innerHTML.includes("-")) return true;
@@ -196,7 +264,7 @@ function checkOp() {
   else return false;
 }
 
-/* Its a checkOp version without the decimal point and that allow (-) at the beggining (mainly for sci calculator) */
+// Its a checkOp version without the decimal point and that allow (-) at the beggining (mainly for sci calculator)
 function checkOp1() {
   if (display.innerHTML.includes("+")) return true;
   else if (display.innerHTML.startsWith("-")) return false;
@@ -207,7 +275,16 @@ function checkOp1() {
   else return false;
 }
 
-/* ------  SPECIAL FUNCTION FOR SOLVE EVAL AND OTHER ISSUES  ------ */
+
+function roundNumber(num) {
+  let size = num.toString().length;
+  let intSize = Math.trunc(num).toString().length;
+  let dec = size - intSize;
+  if (dec >= 5) return num.toFixed(4)
+  else return num;
+}
+
+// ------  SPECIAL FUNCTION FOR SOLVE EVAL AND OTHER ISSUES  ------
 
 //It recyve a string with numbers and operators;
 function calcNums(str) {
@@ -218,9 +295,10 @@ function calcNums(str) {
   //We make a split with operators;
   let arrNums = str.split(/[^A-Za-z.\d]/g);
 
-  //Inside here we check if first number is a negative number; if that:
-  //We delete that space in array
-  //We transform the fiorst number in negative number multipying by -1;
+  /** Inside here we check if first number is a negative number; if that:
+   * We delete that space in array
+   * We transform the fiorst number in negative number multipying by -1;
+   */
   if (negativo === true) {
     arrNums.splice(0, 1);
     arrNums[0] = parseFloat(arrNums[0]);
@@ -240,10 +318,11 @@ function calcNums(str) {
   let j = 0;
   let res = 0; //partial result just for first iterarion;
 
-  //We use this while and switch pattern to iterate over operators-
-  //and do prioritary operations (*, / and %) in natural order first;
-  //we use splice method to mutate the arrays and remove "wasted" numbers-
-  //and operators and add the result of that numbers to the numbers array;
+  /** We use this while and switch pattern to iterate over operators-
+   * and do prioritary operations (*, / and %) in natural order first;
+   * we use splice method to mutate the arrays and remove "wasted" numbers-
+   * and operators and add the result of that numbers to the numbers array;
+   */
   while (j < arrOp.length) {
     num1 = arrNums[j];
     num2 = arrNums[j + 1];
@@ -271,9 +350,10 @@ function calcNums(str) {
     j++;
   }
 
-  //With this second while-switch pattern we iterate over the new operators array-
-  //to do the non prioritary operations (+ and -) in their natural order;
-  //Finally we return result;
+  /** With this second while-switch pattern we iterate over the new operators array-
+   * to do the non prioritary operations (+ and -) in their natural order;
+   * Finally we return result;
+   */
   if (arrOp.includes("+") || arrOp.includes("-")) {
     num1 = arrNums[0];
     while (i < arrOp.length) {
@@ -309,10 +389,14 @@ function sciCal(event) {
 }
 
 function sqRoot() {
-  if (!checkOp1() && !display.hasAttribute("deletable")) {
+  if (
+    !checkOp1() &&
+    !display.hasAttribute("deletable") &&
+    display.textContent != ""
+  ) {
     if (!(Math.sign(display.textContent) == -1)) {
       displayLog.unshift("√(" + display.textContent + ")");
-      display.textContent = Math.sqrt(display.textContent).toPrecision(3);
+      display.textContent = roundNumber(Math.sqrt(display.textContent));
       displayLog.unshift("Result " + display.textContent);
       display.setAttribute("display-state", "toClear");
       display.setAttribute("log-state", "solved");
@@ -327,10 +411,14 @@ function sqRoot() {
 }
 
 function logE() {
-  if (!checkOp1() && !display.hasAttribute("deletable")) {
+  if (
+    !checkOp1() &&
+    !display.hasAttribute("deletable") &&
+    display.textContent != ""
+  ) {
     if (!(Math.sign(display.textContent) == -1)) {
       displayLog.unshift("log(" + display.textContent + ")");
-      display.textContent = Math.log(display.textContent).toPrecision(3);
+      display.textContent = roundNumber(Math.log(display.textContent));
       displayLog.unshift("Result " + display.textContent);
       display.setAttribute("display-state", "toClear");
       display.setAttribute("log-state", "solved");
@@ -341,13 +429,19 @@ function logE() {
       display.setAttribute("log-state", "solved");
     }
     refreshLogList();
+    if (display.textContent == "Infinity" || display.textContent == "-Infinity")
+      display.setAttribute("deletable", "not");
   }
 }
 
 function sinX() {
-  if (!checkOp1() && !display.hasAttribute("deletable")) {
+  if (
+    !checkOp1() &&
+    !display.hasAttribute("deletable") &&
+    display.textContent != ""
+  ) {
     displayLog.unshift("sin (" + display.textContent + ")");
-    display.textContent = Math.sin(display.textContent).toPrecision(3);
+    display.textContent = roundNumber(Math.sin(display.textContent));
     displayLog.unshift("Result " + display.textContent);
     display.setAttribute("display-state", "toClear");
     display.setAttribute("log-state", "solved");
@@ -356,9 +450,13 @@ function sinX() {
 }
 
 function cosX() {
-  if (!checkOp1() && !display.hasAttribute("deletable")) {
+  if (
+    !checkOp1() &&
+    !display.hasAttribute("deletable") &&
+    display.textContent != ""
+  ) {
     displayLog.unshift("cos (" + display.textContent + ")");
-    display.textContent = Math.cos(display.textContent).toPrecision(3);
+    display.textContent = roundNumber(Math.cos(display.textContent));
     displayLog.unshift("Result " + display.textContent);
     display.setAttribute("display-state", "toClear");
     display.setAttribute("log-state", "solved");
@@ -367,9 +465,13 @@ function cosX() {
 }
 
 function tanX() {
-  if (!checkOp1() && !display.hasAttribute("deletable")) {
+  if (
+    !checkOp1() &&
+    !display.hasAttribute("deletable") &&
+    display.textContent != ""
+  ) {
     displayLog.unshift("tan (" + display.textContent + ")");
-    display.textContent = Math.tan(display.textContent).toPrecision(3);
+    display.textContent = roundNumber(Math.tan(display.textContent));
     displayLog.unshift("Result " + display.textContent);
     display.setAttribute("display-state", "toClear");
     display.setAttribute("log-state", "solved");
@@ -378,9 +480,13 @@ function tanX() {
 }
 
 function degRad() {
-  if (!checkOp1() && !display.hasAttribute("deletable")) {
+  if (
+    !checkOp1() &&
+    !display.hasAttribute("deletable") &&
+    display.textContent != ""
+  ) {
     displayLog.unshift(display.textContent + " DEG");
-    display.textContent = display.textContent * (Math.PI / 180).toPrecision(3);
+    display.textContent = roundNumber(display.textContent * (Math.PI / 180));
     displayLog.unshift("Result " + display.textContent + " RAD");
     display.setAttribute("display-state", "toClear");
     display.setAttribute("log-state", "solved");
@@ -388,9 +494,9 @@ function degRad() {
   }
 }
 
-/* ------  DISPLAY LOG  ------ */
+// ------  DISPLAY LOG  ------
 
-/*Called after equal to add new set of data to log list array, restart the display log and show actual data*/
+//Called after equal to add new set of data to log list array, restart the display log and show actual data
 function refreshLogList() {
   let logList = document.querySelector(".log-list");
   logList.innerHTML = "";
@@ -404,38 +510,11 @@ function refreshLogList() {
   }
 }
 
-/*clear loglist and set display log array to empty*/
+//clear loglist and set display log array to empty
 function clearLogList() {
   let logList = document.querySelector(".log-list");
   logList.innerHTML = "";
   displayLog = [];
-}
-
-/* ------  DARK MODE  ------ */
-
-/*Just some classes adition to make dark-mode properly work*/
-
-function toDarkMode() {
-  let corner = document.querySelector(".corner");
-  let bodyCol = document.querySelector("body");
-  let cal = document.querySelector(".calculator-grid");
-  let upper = document.querySelector(".upper-bar");
-  let btn = [...document.querySelectorAll(".btn-color")];
-  let btn1 = [...document.querySelectorAll(".btn")];
-  let btnS = document.querySelector(".btn-s");
-  let slider = document.querySelector(".slider");
-
-  corner.classList.toggle("dark-corner");
-  display.classList.toggle("dark-display");
-  bodyCol.classList.toggle("dark-bg");
-  cal.classList.toggle("dark-cal");
-  upper.classList.toggle("dark-upper");
-  btn.forEach((elem, i, arr) => arr[i].classList.toggle("dark-btn"));
-  btn1.forEach((elem, i, arr) => arr[i].classList.toggle("dark-btn1"));
-  btnS.classList.toggle("dark-btn-s");
-  clearLog.classList.toggle("dark-btn-log");
-  slider.classList.toggle("dark-slider");
-  btnSci.classList.toggle("dark-btn-science");
 }
 
 //------------------- SOUND -------------------------
@@ -458,6 +537,7 @@ function playStopMusic() {
 //------------------- CLOCK -------------------------
 
 function setClock() {
+  let clockDate = document.querySelector(".date");
   let clockDisplay = document.querySelector(".clock");
   let date = new Date();
   let dateHours = date.getHours();
@@ -470,7 +550,37 @@ function setClock() {
   strHour = dateHours.toString();
   if (strHour.length == 1) dateHours = "0" + dateHours;
   let now = dateHours + " : " + dateMinutes + " : " + dateSeconds;
-
   clockDisplay.textContent = now;
   setTimeout("setClock()", 1000);
+}
+
+// ------  DARK MODE  ------
+
+//Just some classes adition to make dark-mode properly work
+
+function toDarkMode() {
+  let corner = document.querySelector(".corner");
+  let bodyCol = document.querySelector("body");
+  let cal = document.querySelector(".calculator-grid");
+  let upper = document.querySelector(".upper-bar");
+  let btn = [...document.querySelectorAll(".btn-color")];
+  let btn1 = [...document.querySelectorAll(".btn")];
+  let btnS = document.querySelector(".btn-s");
+  let slider = document.querySelector(".slider");
+  let clockDiv = document.querySelector(".clock");
+  let sciBtn = document.querySelectorAll(".sci-btn");
+
+  corner.classList.toggle("dark-corner");
+  display.classList.toggle("dark-display");
+  bodyCol.classList.toggle("dark-bg");
+  cal.classList.toggle("dark-cal");
+  upper.classList.toggle("dark-upper");
+  btn.forEach((elem) => elem.classList.toggle("dark-btn"));
+  btn1.forEach((elem) => elem.classList.toggle("dark-btn1"));
+  btnS.classList.toggle("dark-btn-s");
+  clearLog.classList.toggle("dark-btn-log");
+  slider.classList.toggle("dark-slider");
+  btnSci.classList.toggle("dark-btn-science");
+  clockDiv.classList.toggle("dark-clock");
+  sciBtn.forEach((elem) => elem.classList.toggle("dark-sci-btn"));
 }

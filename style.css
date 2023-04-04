@@ -6,7 +6,7 @@
 :root {
   --main-bg-color: #a2d9ce;
   --cal-color: ghostwhite;
-  --display-color: #a9f3da;
+  --display-color: #caf0e3;
   --btn-color: #80ed99;
   --spbtn-color: #57cc99;
   --dark-bg-color: #db86ee;
@@ -33,12 +33,12 @@ body {
 .calculator-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto 17% auto;
+  grid-template-rows: auto 18% auto;
   min-width: 400px;
   max-width: 940px;
   min-height: 72vh;
   background-color: var(--cal-color);
-  margin: 100px auto auto;
+  margin: 100px auto;
   padding: 20px 10px;
   border-radius: 30px;
 }
@@ -52,7 +52,63 @@ body {
   border-radius: 30px 30px 0 0;
 }
 
-/* The switch - the box around the slider */
+.display {
+  grid-column: 1/5;
+  background-color: var(--display-color);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  font-size: 50px;
+  padding-right: 10px;
+  padding-left: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  /*border: 1px solid;*/
+  height: 64px;
+  width: 64px;
+  display: flex;
+  cursor: pointer;
+}
+
+.btn-color {
+  background-color: var(--btn-color);
+}
+
+.btn-big {
+  font-size: 40px;
+}
+
+.btn-s {
+  background-color: var(--spbtn-color);
+}
+
+.btn-padd {
+  position: relative;
+  bottom: 3px;
+}
+
+.btn-padd1 {
+  position: relative;
+  top: 3px;
+}
+
+.equal {
+  grid-column: 4/5;
+}
+
+/* ----------TOGGLE-BUTTON----------*/
+/* The box around the slider */
 .switch {
   position: relative;
   display: inline-block;
@@ -110,60 +166,7 @@ input:checked + .slider:before {
 .slider:before {
   border-radius: 50%;
 }
-
-.display {
-  grid-column: 1/5;
-  background-color: var(--display-color);
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  font-size: 50px;
-  padding-right: 10px;
-  padding-left: 10px;
-}
-
-.btn-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.btn {
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  /*border: 1px solid;*/
-  height: 64px;
-  width: 64px;
-  display: flex;
-  cursor: pointer;
-}
-
-.btn-color {
-  background-color: var(--btn-color);
-}
-
-.btn-big {
-  font-size: 40px;
-}
-
-.btn-s {
-  background-color: var(--spbtn-color);
-}
-
-.btn-padd {
-  position: relative;
-  bottom: 3px;
-}
-
-.btn-padd1 {
-  position: relative;
-  top: 3px;
-}
-
-.equal {
-  grid-column: 4/5;
-}
+/* ------------------------------------ */
 
 /*LOG LIST*/
 
@@ -176,6 +179,7 @@ input:checked + .slider:before {
   margin-top: 50px;
   margin-left: 30px;
   margin-bottom: 30px;
+  font-size: 26px;
 }
 
 .btn-log,
@@ -292,8 +296,8 @@ input:checked + .slider:before {
   align-self: center;
   width: 110px;
   padding: 5px;
-  color: var(--spbtn-dark-color);
-  border: 3px solid var(--btn-dark-color);
+  color: black;
+  border: 5px solid var(--spbtn-dark-color);
   border-radius: 5px;
   cursor: pointer;
 }
@@ -303,7 +307,7 @@ input:checked + .slider:before {
 .clock {
   grid-row: 11/12;
   display: flex;
-  width: 190px;
+  width: 210px;
   justify-self: center;
   color: var(--spbtn-dark-color);
   cursor: default;
@@ -368,4 +372,12 @@ input:checked + .dark-slider {
 
 input:focus + .dark-slider {
   background-color: var(--spbtn-dark-color);
+}
+
+.dark-clock {
+  color: var(--btn-color);
+}
+
+.dark-sci-btn {
+  border-color: var(--btn-color);
 }
