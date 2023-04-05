@@ -41,6 +41,8 @@ body {
   margin: 100px auto;
   padding: 20px 10px;
   border-radius: 30px;
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
 }
 
 .upper-bar {
@@ -74,7 +76,6 @@ body {
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  /*border: 1px solid;*/
   height: 64px;
   width: 64px;
   display: flex;
@@ -146,15 +147,15 @@ body {
   transition: 0.4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: var(--main-bg-color);
 }
 
-input:focus + .slider {
+input:focus+.slider {
   box-shadow: 0 0 1px var(--main-bg-color);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(26px);
 }
 
@@ -166,6 +167,7 @@ input:checked + .slider:before {
 .slider:before {
   border-radius: 50%;
 }
+
 /* ------------------------------------ */
 
 /*LOG LIST*/
@@ -258,6 +260,7 @@ input:checked + .slider:before {
 
 #image {
   height: 220px;
+  filter: drop-shadow(0 0 20px #585858);
 }
 
 /*---------------------- SCIENCE ----------------------*/
@@ -309,8 +312,19 @@ input:checked + .slider:before {
   display: flex;
   width: 210px;
   justify-self: center;
-  color: var(--spbtn-dark-color);
+  color: var(--btn-dark-color);
   cursor: default;
+  padding-left: 10px;
+}
+
+.date {
+  grid-row: 12/13;
+  display: flex;
+  font-size: 18px;
+  justify-self: center;
+  color: var(--btn-dark-color);
+  cursor: default;
+  align-self: flex-start;
 }
 
 /* -------- SOUND ------ */
@@ -366,18 +380,19 @@ iframe {
   background-color: var(--btn-color);
 }
 
-input:checked + .dark-slider {
+input:checked+.dark-slider {
   background-color: var(--spbtn-dark-color);
 }
 
-input:focus + .dark-slider {
+input:focus+.dark-slider {
   background-color: var(--spbtn-dark-color);
-}
-
-.dark-clock {
-  color: var(--btn-color);
 }
 
 .dark-sci-btn {
   border-color: var(--btn-color);
+}
+
+.dark-clock,
+.dark-date {
+  color: var(--btn-color);
 }

@@ -143,7 +143,6 @@ function printDecimal(decimal, zeroDec) {
   }
 }
 
-
 //Change the sign of the number on display
 function makeNegative() {
   if (!checkEndOp()) {
@@ -316,7 +315,7 @@ function calcNums(str) {
   let result = 0;
   let i = 0;
   let j = 0;
-  let res = 0; //partial result just for first iterarion;
+  let res = 0;                   //partial result just for first iterarion;
 
   /** We use this while and switch pattern to iterate over operators-
    * and do prioritary operations (*, / and %) in natural order first;
@@ -540,9 +539,9 @@ function setClock() {
   let clockDate = document.querySelector(".date");
   let clockDisplay = document.querySelector(".clock");
   let date = new Date();
-  let dateHours = date.getHours();
-  let dateMinutes = date.getMinutes();
   let dateSeconds = date.getSeconds();
+  let dateMinutes = date.getMinutes();
+  let dateHours = date.getHours();
   let strSeg = dateSeconds.toString();
   if (strSeg.length == 1) dateSeconds = "0" + dateSeconds;
   let strMin = dateMinutes.toString();
@@ -550,8 +549,31 @@ function setClock() {
   strHour = dateHours.toString();
   if (strHour.length == 1) dateHours = "0" + dateHours;
   let now = dateHours + " : " + dateMinutes + " : " + dateSeconds;
+  let dateWeekDay = date.getDay();
+  dateWeekDay = convertDay(dateWeekDay);
+  let dateDay = date.getDate();
+  let strDay = dateDay.toString();
+  if (strDay.length == 1) dateDay = "0" + dateDay;
+  let dateMonth = date.getMonth() + 1;
+  let strMonth = dateMonth.toString();
+  if (strMonth.length == 1) dateMonth = "0" + dateMonth;
+  let dateYear = date.getFullYear();
+  let strYear = dateYear.toString();
+  if (strYear.length == 1) dateYear = "0" + dateYear;
+  let today = dateWeekDay + " - " + dateDay + "/" + dateMonth + "/" + dateYear;
   clockDisplay.textContent = now;
+  clockDate.textContent = today;
   setTimeout("setClock()", 1000);
+}
+
+function convertDay(num) {
+  if (num == 1) return "Monday";
+  if (num == 2) return "Tuesday";
+  if (num == 3) return "Wednesday";
+  if (num == 4) return "Thursday";
+  if (num == 5) return "Friday";
+  if (num == 6) return "Saturday";
+  if (num == 0) return "Sunday";
 }
 
 // ------  DARK MODE  ------
@@ -567,8 +589,9 @@ function toDarkMode() {
   let btn1 = [...document.querySelectorAll(".btn")];
   let btnS = document.querySelector(".btn-s");
   let slider = document.querySelector(".slider");
-  let clockDiv = document.querySelector(".clock");
   let sciBtn = document.querySelectorAll(".sci-btn");
+  let clockDiv = document.querySelector(".clock");
+  let dateDiv = document.querySelector(".date");
 
   corner.classList.toggle("dark-corner");
   display.classList.toggle("dark-display");
@@ -581,6 +604,7 @@ function toDarkMode() {
   clearLog.classList.toggle("dark-btn-log");
   slider.classList.toggle("dark-slider");
   btnSci.classList.toggle("dark-btn-science");
-  clockDiv.classList.toggle("dark-clock");
   sciBtn.forEach((elem) => elem.classList.toggle("dark-sci-btn"));
+  clockDiv.classList.toggle("dark-clock");
+  dateDiv.classList.toggle("dark-date");
 }
