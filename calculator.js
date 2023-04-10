@@ -1,10 +1,3 @@
-/** Each numeric button add a number on display;
- * Decimal point (.) is not allowed as first character on display;
- * we will fix a max num of characters on nine (9) + three (3) operators;
- * "c" button clear all the character on display;
- * extra feature, keyboard keys are also working;
- */
-
 // global variables needed
 const numKeys = document.querySelectorAll(".btn-num");
 const operatorKeys = document.querySelectorAll(".btn-op");
@@ -54,9 +47,14 @@ function printNumber(event) {
   if ((event.target.innerText != 0) || display.innerHTML.toString().length != 0) {
     if (event.target.innerText != 0 || !checkEndOp1()) {
       if (display.innerHTML.toString().length < 20) display.textContent += event.target.innerText;
+    } else {
+      display.textContent += "0.";
+      display.setAttribute("decimal", "passed");
     }
+  } else {
+    display.textContent += "0.";
+    display.setAttribute("decimal", "passed");
   }
-  else display.textContent += "0.";
 }
 
 // In charge of printing numbers coming from keyboard
@@ -81,8 +79,7 @@ function printNumberKeyboard(event) {
  */
 function printOperator(event) {
   if (!display.hasAttribute("deletable")) {
-    if (display.hasAttribute("display-state"))
-      display.removeAttribute("display-state");
+    if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
     if (display.hasAttribute("log-state")) display.removeAttribute("log-state");
     if (display.hasAttribute("decimal")) display.removeAttribute("decimal");
 
@@ -100,8 +97,7 @@ function printOperator(event) {
 // In charge of printting operators coming from keyboard
 function printOperatorKeyboard(event) {
   if (!display.hasAttribute("deletable")) {
-    if (display.hasAttribute("display-state"))
-      display.removeAttribute("display-state");
+    if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
     if (display.hasAttribute("log-state")) display.removeAttribute("log-state");
     if (display.hasAttribute("decimal")) display.removeAttribute("decimal");
 
@@ -138,7 +134,7 @@ function printDecimal(decimal, zeroDec) {
         if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
         display.textContent += zeroDec;
         display.setAttribute("decimal", "passed");
-      }
+      } else if (!checkEndOp() && !display.hasAttribute("decimal")) display.textContent += decimal;
     }
   }
 }
@@ -197,7 +193,7 @@ function deleteSimple() {
     } else if (checkEndOp1()) {
       display.textContent = display.textContent.slice(0, -1);
       if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
-      if (!checkOp()) {
+      if (!checkOpNoDec()) {
         display.setAttribute("log-state", "solved");
         if (display.hasAttribute("display-state")) display.removeAttribute("display-state");
         arrOp.pop();
@@ -260,6 +256,16 @@ function checkOp() {
   else if (display.innerHTML.includes("/")) return true;
   else if (display.innerHTML.includes("%")) return true;
   else if (display.innerHTML.includes(".")) return true;
+  else return false;
+}
+
+function checkOpNoDec() {
+  if (display.innerHTML.includes("+")) return true;
+  else if (display.innerHTML.includes("-")) return true;
+  else if (display.innerHTML.includes("*")) return true;
+  else if (display.innerHTML.includes("/")) return true;
+  else if (display.innerHTML.includes("%")) return true;
+  else if (display.innerHTML.includes(".")) return false;
   else return false;
 }
 
@@ -331,23 +337,28 @@ function calcNums(str) {
         arrNums.splice(j, 2, res);
         arrOp.splice(j, 1);
         num1 = res;
+        j = j;
         break;
       case "/":
         res = num1 / num2;
         arrNums.splice(j, 2, res);
         arrOp.splice(j, 1);
         num1 = res;
+        j = j;
         break;
       case "%":
         res = num1 % num2;
         arrNums.splice(j, 2, res);
         arrOp.splice(j, 1);
         num1 = res;
+        j = j;
         break;
+      default: j++;
     }
     result = num1;
-    j++;
+
   }
+
 
   /** With this second while-switch pattern we iterate over the new operators array-
    * to do the non prioritary operations (+ and -) in their natural order;
