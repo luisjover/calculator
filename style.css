@@ -35,8 +35,8 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: auto 18% auto;
-  min-width: 600px;
-  max-width: 800px;
+  min-width: 400px;
+  max-width: 600px;
   min-height: 72vh;
   background-color: var(--cal-color);
   margin: 100px auto;
