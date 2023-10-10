@@ -1,4 +1,5 @@
 // global variables needed
+
 const numKeys = document.querySelectorAll(".btn-num");
 const operatorKeys = document.querySelectorAll(".btn-op");
 const clearLog = document.getElementById("clear-log");
