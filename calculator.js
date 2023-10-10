@@ -47,7 +47,7 @@ function printNumber(event) {
   }
   if ((event.target.innerText != 0) || display.innerHTML.toString().length != 0) {
     if (event.target.innerText != 0 || !checkEndOp1()) {
-      if (display.innerHTML.toString().length < 20) display.textContent += event.target.innerText;
+      if (display.innerHTML.toString().length < 100) display.textContent += event.target.innerText;
     } else {
       display.textContent += "0.";
       display.setAttribute("decimal", "passed");
@@ -69,7 +69,7 @@ function printNumberKeyboard(event) {
       display.textContent = "";
       display.removeAttribute("deletable");
     }
-    if (display.innerHTML.toString().length < 20)
+    if (display.innerHTML.toString().length < 100)
       display.textContent += event.key;
   }
 }
@@ -86,7 +86,7 @@ function printOperator(event) {
 
     if (
       display.innerHTML.toString().length > 0 &&
-      display.innerHTML.toString().length < 20 &&
+      display.innerHTML.toString().length < 100 &&
       !checkEndOp()
     ) {
       arrOp.push(event.target.innerText);
@@ -104,7 +104,7 @@ function printOperatorKeyboard(event) {
 
     if (
       display.innerHTML.toString().length > 0 &&
-      display.innerHTML.toString().length < 20 &&
+      display.innerHTML.toString().length < 100 &&
       !checkEndOp()
     ) {
       arrOp.push(event.key);
